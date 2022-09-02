@@ -1,23 +1,63 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState, useMemo } from "react";
+import axios from "axios";
+import Cards from "./components/Card";
+import "./App.css";
+import { getPokemons } from "./services/commonServices";
+import Search from "./components/Search";
 
 function App() {
+  let [pokemons, setPokemons] = useState([]);
+  let [search, setSearch] = useState("");
+  let [types, setTypes] = useState([]);
+  // let [filteredPokemons, setFilteredPokemons] = useState([])
+  // console.log(search);
+  console.log(pokemons);
+  console.log(types);
+
+  // const handleSearch = () => {
+  //   setFilteredPokemons(pokemons.filter(
+  //     pokemon => pokemon.name == search
+  //   ))
+  // }
+
+  const filteredPokemons = useMemo(
+    () =>
+      pokemons.filter((pokemon) => {
+        const filteredName = search.length
+          ? pokemon.name.includes(search)
+          : true;
+        const filteredType = types.length
+          ? pokemon.types.some(({ type }) => types.includes(type.name))
+          : true;
+        console.log(filteredName || filteredType);
+        return filteredName && filteredType;
+      }),
+    [search, pokemons, types]
+  );
+  console.log(filteredPokemons);
+  console.log(filteredPokemons.length);
+
+  useEffect(() => {
+    (async function () {
+      const { results } = await getPokemons();
+
+      const promises = results.map((item) => axios.get(item.url));
+
+      const responses = await Promise.all(promises);
+      const pokemons = responses.map(({ data }) => data);
+      setPokemons(pokemons);
+    })();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Pokedex</h1>
+      <Search setSearch={setSearch} className="search" />
+      <div className="pokemons">
+        {filteredPokemons.map((item) => (
+          <Cards key={item.id} item={item} setTypes={setTypes} />
+        ))}
+      </div>
     </div>
   );
 }
