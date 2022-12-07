@@ -1,41 +1,27 @@
-import { useEffect, useState, useMemo } from "react";
-import axios from "axios";
-import Cards from "./components/Card";
-import "./App.css";
-import { getPokemons } from "./services/commonServices";
-import Search from "./components/Search";
+import { useEffect, useState, useMemo } from 'react';
+import axios from 'axios';
+import Cards from './components/Card';
+import './App.css';
+import { getPokemons } from './services/commonServices';
+import Search from './components/Search';
 
 function App() {
-  let [pokemons, setPokemons] = useState([]);
-  let [search, setSearch] = useState("");
-  let [types, setTypes] = useState([]);
-  // let [filteredPokemons, setFilteredPokemons] = useState([])
-  // console.log(search);
-  console.log(pokemons);
-  console.log(types);
-
-  // const handleSearch = () => {
-  //   setFilteredPokemons(pokemons.filter(
-  //     pokemon => pokemon.name == search
-  //   ))
-  // }
+  const [pokemons, setPokemons] = useState([]);
+  const [search, setSearch] = useState('');
+  const [types, setTypes] = useState([]);
 
   const filteredPokemons = useMemo(
-    () =>
-      pokemons.filter((pokemon) => {
-        const filteredName = search.length
-          ? pokemon.name.includes(search)
-          : true;
-        const filteredType = types.length
-          ? pokemon.types.some(({ type }) => types.includes(type.name))
-          : true;
-        console.log(filteredName || filteredType);
-        return filteredName && filteredType;
-      }),
-    [search, pokemons, types]
+    () => pokemons.filter((pokemon) => {
+      const filteredName = search.length
+        ? pokemon.name.includes(search)
+        : true;
+      const filteredType = types.length
+        ? pokemon.types.some(({ type }) => types.includes(type.name))
+        : true;
+      return filteredName && filteredType;
+    }),
+    [search, pokemons, types],
   );
-  console.log(filteredPokemons);
-  console.log(filteredPokemons.length);
 
   useEffect(() => {
     (async function () {
@@ -46,7 +32,7 @@ function App() {
       const responses = await Promise.all(promises);
       const pokemons = responses.map(({ data }) => data);
       setPokemons(pokemons);
-    })();
+    }());
   }, []);
 
   return (

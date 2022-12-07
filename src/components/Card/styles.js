@@ -1,4 +1,4 @@
-import { makeStyles } from "@mui/styles";
+import { makeStyles } from '@mui/styles';
 
 export default makeStyles(() => ({
   card: {
@@ -6,10 +6,10 @@ export default makeStyles(() => ({
     height: '200px',
   },
   image: {
-    width: '100px'
+    width: '100px',
   },
   search: {
-    marginLeft: "auto",
-    marginRight: "auto"
-  }
-}), { index: 1});
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+}), { index: 1 });
